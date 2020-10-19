@@ -38,3 +38,21 @@
         dest: /etc/yum.repos.d/kubeops.repo
       when: architectures == 'arm64'
   when: ansible_distribution in [ 'EulerOS' ]
+
+- block:
+    - name: Test ping www.badiu.com
+      shell: ping -c 4 www.baidu.com
+    register: ping
+
+    - name: Add aliyun repository
+      get_url: 
+        url: http://mirrors.aliyun.com/repo/Centos-7.repo
+        dest: /etc/yum.repos.d/CentOS-Base.repo 
+      when: architectures == 'amd64'
+
+    - name: Add aliyun repository
+      get_url: 
+        url: http://mirrors.aliyun.com/repo/Centos-altarch-7.repo
+        dest: /etc/yum.repos.d/CentOS-altarch.repo 
+      when: architectures == 'arm64'
+  when: ansible_distribution in [ 'CentOS','RedHat' ] and '"ttl" in ping'

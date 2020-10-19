@@ -1,14 +1,16 @@
 - name: Status firewalld
   shell: >
-    systemctl status firewalld | grep active || echo "not be found"
+    systemctl status firewalld | grep dead || echo "not be found"
   register: firewalld_already_installed
+# [root@kube-meixu-worker-3 ~]# systemctl status firewalld | grep  inactive || echo "not be found"
+#  Active: inactive (dead)
 
 - name: Disable firewalld
   service:
     name: firewalld
     state: stopped
     enabled: no
-  when: '"active" in firewalld_already_installed.stdout'
+  when: '"dead" not in firewalld_already_installed.stdout'
 
 - name: Install base rpm package
   yum: 
@@ -20,6 +22,7 @@
     - rsync
     - socat
     - lvm2
+    - iptables-services
     state: latest
 
 - name: Install ipvs rpm package
