@@ -1,16 +1,14 @@
 - name: Status firewalld
   shell: >
-    systemctl status firewalld | grep dead || echo "not be found"
+    systemctl status firewalld | grep -E 'dead|disabled' || echo "not be found"
   register: firewalld_already_installed
-# [root@kube-meixu-worker-3 ~]# systemctl status firewalld | grep  inactive || echo "not be found"
-#  Active: inactive (dead)
 
 - name: Disable firewalld
   service:
     name: firewalld
     state: stopped
     enabled: no
-  when: '"dead" not in firewalld_already_installed.stdout'
+  when: '"dead" not in firewalld_already_installed.stdout or "disabled" not in firewalld_already_installed.stdout'
 
 - name: Install base rpm package
   yum: 

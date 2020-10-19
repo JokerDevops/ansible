@@ -42,7 +42,7 @@
 - block:
     - name: Test ping www.badiu.com
       shell: ping -c 4 www.baidu.com
-    register: ping
+      register: ping
 
     - name: Add aliyun repository
       get_url: 
